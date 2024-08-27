@@ -1,0 +1,186 @@
+<head>
+    <style>
+        body{
+            background-color: rgb(27, 1, 45);
+           
+            
+        }
+        #container{
+            background-color: darkslateblue;
+            margin:auto;
+            width: 30%; 
+            border-radius: 10px;
+               
+        }
+       #headparent{
+     display: flex;
+     justify-content: center;
+        }
+        #inputparent{
+          display: flex;
+          justify-content: center;
+         
+      
+        }
+        #butparent{
+            display: flex;
+            justify-content: center;
+            margin-top:20px;
+
+            
+           
+        }
+        #inputele{
+   height: 40px;
+   width: 80%;
+   border-radius: 10px;
+        }
+        #butchild{
+          height: 40px;
+          width: 80%;
+          color: brown;
+          text-align: center;
+          font-size:200%;
+          background-color: rgb(27, 1, 45,0.6);
+          border-radius: 10px;
+
+        
+
+        }
+        #todos{
+        
+          justify-content: center;
+          border-radius: 10px;
+          border-color: beige;
+           
+          padding:20px;
+          margin: 20px;
+        }
+        .text1{
+          
+          background-color:  darkslateblue;
+          color: rgb(232, 234, 236);
+        }
+     
+        .delete-button{
+          background-color: #c17b18;
+          height: 40px;
+          width: 100px;
+          border-radius: 10px;
+          font-weight: 600;
+          
+        }
+        .tododiv{
+          
+          border-radius: 10px;
+          margin: 20px;
+          padding: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          background-color: rgb(96, 108, 118);
+        }
+       
+        .cb{
+          transform: scale(1.5);
+        }
+        .strikethrough {
+    text-decoration: line-through;
+    text-decoration-color: black;
+    text-decoration-thickness: 1px;
+}
+
+    </style>
+</head>
+<body >
+
+    <div id="container">
+      <div id="headparent">
+      <h1 id="heading">ToDo List</h1></div>
+      <div id="inputparent">
+    <input id="inputele"type="text" placeholder="Enter your task..."></input></div>
+    <div id="butparent">
+    <button id="butchild" onclick="addTodo()">+</button></div>
+    <div id="todos">
+     
+      <div></div>
+    </div>
+</div>
+
+    <script>
+
+      let todos = [];
+
+      // we are updating the state variable based on user clicking
+      function addTodo() {
+        // whnever user clicks onthe button we are pdating the state by pushing the input vlaue in our todo List
+        // and then render fxn iterates through the todos array and updates the dom according to component fxn 
+        todos.push({
+          title: document.querySelector("input").value, //(key-value)-state variable
+          completed:false
+        })
+        render();
+      }
+  
+      function tdelete(index){
+        todos.splice(index,1);
+        render();
+        ctr--;
+
+      }
+        // we also have to tell react once that this is how you create  a div 
+       function createTodDOcomponent(todo , index){
+        const divEl = document.createElement("div");
+        const span1=document.createElement("input");
+        span1.type="text";
+        const cb1 = document.createElement("input");
+         cb1.type = "checkbox";
+        divEl.classList.add("tododiv");
+    
+        const button1=document.createElement("button");
+        span1.value=index+1 + "."+todo.title;
+        button1.innerHTML="Delete";
+        button1.classList.add("delete-button");
+        span1.classList.add("text1");
+        cb1.classList.add("cb");
+        
+        divEl.setAttribute("id",index);
+        button1.setAttribute("onclick","tdelete("+index+")" ,"id","but1");
+        cb1.checked=todo.completed;
+       
+        if (cb1.checked) {
+            span1.classList.add("strikethrough");}
+        
+            cb1.addEventListener("change", function () {
+        todos[index].completed = cb1.checked;
+        if (cb1.checked) {
+            span1.classList.add("strikethrough");
+        } else {
+            span1.classList.remove("strikethrough");
+        }
+    });
+        divEl.appendChild(cb1);
+        divEl.appendChild(span1);
+        divEl.appendChild(button1);
+
+
+        return divEl;
+
+       
+      }
+      //  this rendering (manipulating the dom) will be done by react itself
+      function render() {
+        document.querySelector("#todos").innerHTML="";   //reconciliation-state difference ke basis pe dom manipulation
+        // i.e suppose there are 3 todos and we want to add 4th , so we clear the whole contaienr div
+        // and then added all the 4 todos back into DOM
+        // but this is not a good Way...react does it efficiently .it simply adds the 4th todo
+        //  by checking the state without removing first three and then adding all 4
+        for(i=0;i,todos.length;i++){
+          const element= createTodDOcomponent(todos[i] ,i);
+          document.querySelector("#todos").appendChild(element);
+        }
+       
+      }
+    </script>
+  </body>
